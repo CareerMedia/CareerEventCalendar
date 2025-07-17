@@ -3,7 +3,7 @@
    =================================== */
 
 // Timing configuration
-const INITIAL_CALENDAR_DELAY = 5000;   // 5s pause on initial calendar view
+const INITIAL_CALENDAR_DELAY = 2000;   // ~2s pause on initial calendar view
 const CYCLE_CALENDAR_DELAY   = 20000;  // 20s pause at end of full cycle
 const EVENT_DISPLAY_DELAY    = 15000;  // 15s display per event card
 const BETWEEN_EVENTS_DELAY   = 1200;   // 1.2s between events
@@ -111,5 +111,5 @@ async function runEventLoop() {
   }
 }
 
-// Kick off when DOM is ready ok
+// Kick off when DOM is ready
 window.addEventListener("DOMContentLoaded", initApp);
