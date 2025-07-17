@@ -21,8 +21,8 @@ function setMonthTitle() {
 /**
  * Generate a static 31-day grid layout.
  * Each cell contains:
- *  - .day-number for the date
- *  - .event-title-preview for a preview title
+ * - .day-number for the date
+ * - .event-title-preview for a preview title
  */
 function drawCalendarGrid() {
   calendarGrid.innerHTML = ""; // clear previous grid
@@ -81,6 +81,7 @@ function highlightCalendarDays(events) {
       marker.textContent = eventsForDay.find(e => e.Type === "holiday").Title || "Holiday";
       cell.appendChild(marker);
     }
+  }); // <-- This closing brace was missing its counterpart in the right place
 }
 
 /**
@@ -102,6 +103,3 @@ function animateDayClose(tile) {
   tile.style.transition = "transform 0.6s ease";
   tile.style.transform = "rotateY(0deg)";
 }
-
-// Export functions if using modules (optional)
-// export { setMonthTitle, drawCalendarGrid, highlightCalendarDays, animateDayOpen, animateDayClose };
