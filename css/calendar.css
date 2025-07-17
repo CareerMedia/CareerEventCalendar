@@ -1,112 +1,73 @@
 /* ===================================
-   calendar.css — Month View Styles
+   calendar.css — Month View & Pulsing
    =================================== */
 
 body {
-  margin: 0;
-  padding: 0;
+  margin: 0; padding: 0;
   font-family: 'Inter', sans-serif;
-  background-color: #ffffff;
-  color: #222;
+  background: #ffffff; color: #222;
   overflow: hidden;
 }
 
-/* Hide utility */
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 
-/* Header styling */
 #calendar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.5rem 2rem;
-  background-color: #d22030;
-  color: white;
-  height: 100px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.5rem 2rem; background: #d22030; color: #fff; height: 100px;
 }
-
-#main-logo {
-  height: 60px;
-  width: auto;
-}
-
+#main-logo { height: 60px; width: auto; }
 #month-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin: 0;
-  text-transform: uppercase;
+  font-size: 2.5rem; font-weight: 800; margin: 0; text-transform: uppercase;
 }
 
-/* Calendar grid container */
 #calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(5, 1fr);
+  grid-template-columns: repeat(7,1fr);
+  grid-template-rows: repeat(5,1fr);
   gap: 1rem;
   padding: 2rem;
-  height: calc(100vh - 100px); /* full viewport minus header */
+  height: calc(100vh - 100px);
   box-sizing: border-box;
-  perspective: 1000px; /* for flips */
-  background-color: #fafafa;
+  background: #fafafa;
 }
 
-/* Individual day cells */
+/* Day cell */
 .calendar-day {
-  background: #f9f9f9;
-  border: 2px solid #ddd;
-  border-radius: 12px;
-  padding: 1rem;
-  box-sizing: border-box;
+  background: #f9f9f9; border: 2px solid #ddd;
+  border-radius: 12px; padding: 1rem;
+  display: flex; flex-direction: column; justify-content: space-between;
   cursor: default;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  transition: transform 0.6s ease, background 0.3s ease;
 }
 
-.calendar-day:hover {
-  transform: scale(1.02);
-  background-color: #fff6f6;
+/* Pulse Animation */
+.pulse {
+  animation: pulse 1s ease-in-out;
 }
 
-/* Mark days with events */
+@keyframes pulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Event vs Holiday */
 .calendar-day.event {
-  border-color: #d22030;
-  box-shadow: 0 0 8px rgba(210, 32, 48, 0.5);
+  border-color: #d22030; box-shadow: 0 0 8px rgba(210,32,48,0.5);
 }
-
-/* Mark holidays */
 .calendar-day.holiday {
   border-color: #888;
 }
 
-/* Day number label */
+/* Day number & preview */
 .day-number {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
+  font-size: 1.5rem; font-weight: bold; color: #333;
 }
-
-/* Title preview for first event */
 .event-title-preview {
-  font-size: 0.9rem;
-  color: #555;
-  margin-top: 0.5rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 100%;
+  font-size: 0.9rem; color: #555;
+  margin-top: 0.5rem; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
 }
-
-/* Holiday marker styling */
 .holiday-marker {
-  font-size: 0.85rem;
-  color: #888;
-  margin-top: 0.5rem;
-  font-style: italic;
-  text-align: center;
+  font-size: 0.85rem; color: #888; font-style: italic;
+  text-align: center; margin-top: 0.5rem;
 }
