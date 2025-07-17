@@ -1,43 +1,30 @@
-/* ============================
-   js/app.js - Main Animation Engine
-   ============================ */
+/* ===================================
+   js/app.js — Main Animation Orchestrator
+   =================================== */
 
 // Configuration
-const INITIAL_CALENDAR_DELAY = 20000;  // 20s pause before first event
+const INITIAL_CALENDAR_DELAY = 5000;   // 5s pause on initial calendar view
 const CYCLE_CALENDAR_DELAY   = 20000;  // 20s pause at end of full cycle
-const EVENT_DISPLAY_DELAY    = 15000;  // 15s per event card
+const EVENT_DISPLAY_DELAY    = 15000;  // 15s display per event card
 const BETWEEN_EVENTS_DELAY   = 1200;   // 1.2s between events
 
 // State
-let allEvents     = [];   // Array of event objects loaded from CSV
-let eventIndex    = 0;    // Index of the current event in the loop
-let calendarDays  = [];   // NodeList of .calendar-day elements
+let allRawEvents   = [];  // Loaded from CSV (includes holidays & events)
+let eventLoopList  = [];  // Filtered list of only Type==="event"
+let eventIndex     = 0;   // Current index in eventLoopList
+let calendarDays   = [];  // NodeList of .calendar-day elements
 
 /**
- * Sleep for a given number of milliseconds.
- * @param {number} ms
- * @returns {Promise<void>}
+ * Sleep helper
+ * @param {number} ms — milliseconds to wait
+ * @returns {Promise}
  */
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 /**
- * Set the calendar header to the current month name.
- */
-function setMonthTitle() {
-  const now = new Date();
-  const monthNames = [
-    "January", "February", "March",     "April",
-    "May",     "June",     "July",      "August",
-    "September","October",  "November", "December"
-  ];
-  const titleEl = document.getElementById("month-title");
-  titleEl.textContent = monthNames[now.getMonth()];
-}
-
-/**
- * Hide the loader screen and reveal the main app UI.
+ * Hide loader and reveal main app container
  */
 function showApp() {
   document.getElementById("loader").style.display = "none";
@@ -45,75 +32,77 @@ function showApp() {
 }
 
 /**
- * Initialize the app:
- * 1. Set month title
- * 2. Draw calendar grid
- * 3. Load and highlight events
- * 4. Pause on calendar
- * 5. Start the event loop
+ * Initialize the application:
+ * 1. Set dynamic month title
+ * 2. Draw the 31-day calendar grid
+ * 3. Load and highlight all events/holidays
+ * 4. Build eventLoopList (only real events)
+ * 5. Pause on calendar view, then start the loop
  */
 async function initApp() {
-  // 1. Month title
-  setMonthTitle();
+  // 1. Header
+  setMonthTitle();                   // calendar.js
 
-  // 2. Draw calendar grid
-  drawCalendarGrid();               // from calendar.js
+  // 2. Calendar grid
+  drawCalendarGrid();                // calendar.js
 
-  // 3. Load events from CSV
-  allEvents = await loadEventsFromCSV();  // from events.js
+  // 3. Load CSV data
+  allRawEvents = await loadEventsFromCSV();  // events.js
 
-  // 4. Highlight days that have events/holidays
-  highlightCalendarDays(allEvents); // from calendar.js
+  // 4. Highlight days
+  highlightCalendarDays(allRawEvents);       // calendar.js
 
-  // 5. Get references to all day tiles
-  calendarDays = document.querySelectorAll(".calendar-day");
+  // 5. Prepare loop list & elements
+  eventLoopList = allRawEvents.filter(e => e.Type === "event");
+  calendarDays   = document.querySelectorAll(".calendar-day");
 
-  // 6. Pause on month-view calendar
+  // 6. Show calendar for initial delay
   await sleep(INITIAL_CALENDAR_DELAY);
   showApp();
 
-  // 7. Start cycling through events
+  // 7. Start perpetual event cycle
   runEventLoop();
 }
 
 /**
- * Main loop: cycles through allEvents indefinitely.
- * Applies flips, shows event cards, and pauses appropriately.
+ * Main perpetual loop:
+ * - Flips open the tile for each event
+ * - Shows its detail card
+ * - Flips back, advances index
+ * - Pauses appropriately at end of cycle or between events
  */
 async function runEventLoop() {
-  if (!allEvents.length) {
+  if (!eventLoopList.length) {
     console.warn("No events to display.");
     return;
   }
 
   while (true) {
-    // Get the next event
-    const evt = allEvents[eventIndex];
+    const evt    = eventLoopList[eventIndex];
     const dayNum = parseInt(evt.Day, 10);
+    const tile   = calendarDays[dayNum - 1];
 
-    // Find the calendar tile for this event
-    const tile = calendarDays[dayNum - 1];
     if (tile) {
-      // Flip open animation
-      animateDayOpen(tile);          // from calendar.js
-      await sleep(1500);             // allow flip to complete
+      // 1. Flip open calendar tile
+      animateDayOpen(tile);        // calendar.js
+      await sleep(1500);
 
-      // Show full-screen event card
-      showEventCard(evt);            // from eventCard.js
+      // 2. Show full-screen event card
+      showEventCard(evt);          // eventCard.js
       await sleep(EVENT_DISPLAY_DELAY);
 
-      // Remove event overlay and flip back
-      removeEventCard();             // from eventCard.js
-      animateDayClose(tile);         // from calendar.js
+      // 3. Remove card & flip back
+      removeEventCard();           // eventCard.js
+      animateDayClose(tile);       // calendar.js
     }
 
-    // Advance index
+    // 4. Advance index
     eventIndex++;
-    const endOfCycle = eventIndex >= allEvents.length;
+    const endOfCycle = eventIndex >= eventLoopList.length;
 
     if (endOfCycle) {
-      // Reset and pause at end of full cycle
       eventIndex = 0;
+      // Pause on calendar at cycle end
       await sleep(CYCLE_CALENDAR_DELAY);
     } else {
       // Short pause before next event
@@ -122,5 +111,5 @@ async function runEventLoop() {
   }
 }
 
-// Kick off initialization once the DOM is fully loaded
+// Kick off when DOM is ready
 window.addEventListener("DOMContentLoaded", initApp);
