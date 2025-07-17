@@ -2,7 +2,7 @@
    css/event.css — Event Card Styles
    ================================== */
 
-/* Hidden until we add .flip-in */
+/* Overlay hidden by default */
 #event-overlay {
   display: none;
   position: fixed;
@@ -16,14 +16,18 @@
   backface-visibility: hidden;
 }
 
-/* Show & flip in */
-#event-overlay.flip-in {
+/* When JS calls showEventCard(), we set display:flex */
+#event-overlay.show {
   display: flex;
+}
+
+/* Flip-in animation on the overlay container */
+#event-overlay.show .event-card {
   animation: flipIn 0.6s ease-out forwards;
 }
 
-/* Flip out */
-#event-overlay.flip-out {
+/* Flip-out animation triggered via JS */
+#event-overlay.hide .event-card {
   animation: flipOut 0.6s ease-in forwards;
 }
 
