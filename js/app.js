@@ -2,7 +2,7 @@
    js/app.js — Main Animation Orchestrator
    =================================== */
 
-// Configuration
+// Timing configuration
 const INITIAL_CALENDAR_DELAY = 5000;   // 5s pause on initial calendar view
 const CYCLE_CALENDAR_DELAY   = 20000;  // 20s pause at end of full cycle
 const EVENT_DISPLAY_DELAY    = 15000;  // 15s display per event card
