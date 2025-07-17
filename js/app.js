@@ -2,10 +2,10 @@
    js/app.js — Loader + Main Orchestrator
    =================================== */
 
-const INITIAL_LOADER_DURATION   = 3000;   // 2 s loader
+const INITIAL_LOADER_DURATION   = 3000;   // 3 s loader
 const CALENDAR_PAUSE_DURATION   = 20000;  // 20 s on calendar between events
-const EVENT_CARD_DURATION       = 10000;  // 20 s showing each event
-const BETWEEN_EVENTS_DELAY      = 12000;   // 1.2 s between events
+const EVENT_CARD_DURATION       = 10000;  // 10 s showing each event
+const BETWEEN_EVENTS_DELAY      = 1200;   // 1.2 s between events
 
 let eventList    = [];
 let currentIndex = 0;
@@ -24,11 +24,11 @@ function showApp() {
 
 /** Prepare calendar grid & load data */
 async function initializeData() {
-  setMonthTitle();           // calendar.js
-  drawCalendarGrid();        // calendar.js
+  setMonthTitle();           // from calendar.js
+  drawCalendarGrid();        // from calendar.js
 
-  const all = await loadEventsFromCSV();  // events.js
-  highlightCalendarDays(all);             // calendar.js
+  const all = await loadEventsFromCSV();  // from events.js
+  highlightCalendarDays(all);             // from calendar.js
 
   // Only “event” items go into the loop
   eventList = all.filter(item => item.Type === "event");
@@ -42,7 +42,7 @@ async function runLoop() {
     return;
   }
 
-  // **Initial 20 s pause on the calendar before first event**
+  // Initial 20 s pause on the calendar before first event
   await sleep(CALENDAR_PAUSE_DURATION);
 
   while (true) {
@@ -51,32 +51,35 @@ async function runLoop() {
     const tile   = dayTiles[dayNum];
 
     if (tile) {
-      // Flip the tile face-up
-      animateDayOpen(tile);              // calendar.js
+      // 1) Pulse the date tile
+      animateDayOpen(tile);  // calendar.js
       await sleep(500);
 
-      // Show the full-screen event card
-      showEventCard(evt);                // eventCard.js
+      // 2) Show the full-screen event card
+      showEventCard(evt);    // eventCard.js
       await sleep(EVENT_CARD_DURATION);
 
-      // Remove the card and flip the tile back
-      removeEventCard();                 // eventCard.js
-      animateDayClose(tile);             // calendar.js
+      // 3) Animate tile back and remove the card, awaiting complete hide
+      animateDayClose(tile);         // calendar.js
+      await removeEventCardAsync();  // eventCard.js (async teardown)
     }
 
-    // **20 s pause on the calendar before next event**
+    // 4) 20 s pause on calendar before next event
     await sleep(CALENDAR_PAUSE_DURATION);
 
-    // Advance & wrap
+    // 5) Advance & wrap
     currentIndex = (currentIndex + 1) % eventList.length;
+
+    // 6) Small gap before pulsing next tile
+    await sleep(BETWEEN_EVENTS_DELAY);
   }
 }
 
-/** Kick things off on DOM ready */
+/** Entry point on DOM ready */
 document.addEventListener("DOMContentLoaded", async () => {
   await initializeData();
 
-  // Show loader, then reveal and start loop
+  // Show loader, then calendar & start loop
   setTimeout(() => {
     showApp();
     runLoop();
