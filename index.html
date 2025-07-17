@@ -1,58 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Career Center Event Calendar</title>
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/loader.css" />
   <link rel="stylesheet" href="css/calendar.css" />
   <link rel="stylesheet" href="css/event.css" />
-
-  <!-- Fonts (optional custom fonts) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-
-  <!-- QR Code Generator -->
-  <script src="lib/qrcode.min.js"></script>
 </head>
-
 <body>
-  <!-- Loader Animation -->
+  <!-- Loader (gradient + spinner only) -->
   <div id="loader">
-    <div class="wave"></div>
-    <div class="wave"></div>
-    <div class="wave"></div>
-    <img src="assets/spinner.png" alt="Loading..." class="spinner" />
+    <div class="spinner"></div>
   </div>
 
-  <!-- Main App Container -->
+  <!-- Main App: hidden until loader goes away -->
   <div id="app" class="hidden">
-    <!-- Header -->
-    <header id="calendar-header">
-      <img src="assets/logo.png" alt="Career Center Logo" id="logo">
-      <h1 id="month-title"></h1>
+    <header>
+      <img src="assets/logo.png" alt="Career Center Logo" id="main-logo" />
+      <h1 id="month-title">Month Events</h1>
     </header>
 
-    <!-- Calendar Grid -->
-    <main>
-      <section id="calendar-grid"></section>
-    </main>
+    <!-- Month Calendar Grid -->
+    <div id="calendar-grid"></div>
 
-    <!-- Event Card Container (injected dynamically) -->
+    <!-- Fullscreen Event Overlay -->
     <div id="event-overlay"></div>
   </div>
 
   <!-- Scripts -->
+  <script src="lib/qrcode.min.js"></script>
   <script src="js/calendar.js"></script>
   <script src="js/events.js"></script>
   <script src="js/eventCard.js"></script>
   <script src="js/qr.js"></script>
   <script src="js/app.js"></script>
 </body>
-
 </html>
