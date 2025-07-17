@@ -1,74 +1,90 @@
 /* ================================
-   calendar.js - Month View Builder
+   js/calendar.js — Month View Builder
    ================================ */
 
 const calendarGrid = document.getElementById("calendar-grid");
+const monthTitleEl = document.getElementById("month-title");
 
 /**
- * Generate the static 31-day grid layout
+ * Set the header to “<Month> Events” based on the current date.
+ */
+function setMonthTitle() {
+  const now = new Date();
+  const monthNames = [
+    "January", "February", "March",     "April",
+    "May",     "June",     "July",      "August",
+    "September","October", "November", "December"
+  ];
+  monthTitleEl.textContent = `${monthNames[now.getMonth()]} Events`;
+}
+
+/**
+ * Generate a static 31-day grid layout.
+ * Each cell contains:
+ *  - .day-number for the date
+ *  - .event-title-preview for a preview title
  */
 function drawCalendarGrid() {
-  // Clear any previous content
-  calendarGrid.innerHTML = "";
-
+  calendarGrid.innerHTML = ""; // clear previous grid
   for (let i = 1; i <= 31; i++) {
-    const day = document.createElement("div");
-    day.classList.add("calendar-day");
-    day.setAttribute("data-day", i);
+    const cell = document.createElement("div");
+    cell.classList.add("calendar-day");
+    cell.setAttribute("data-day", i);
 
-    const dayNum = document.createElement("div");
-    dayNum.classList.add("day-number");
-    dayNum.textContent = i;
+    const dayNumber = document.createElement("div");
+    dayNumber.classList.add("day-number");
+    dayNumber.textContent = i;
 
-    const eventPreview = document.createElement("div");
-    eventPreview.classList.add("event-title-preview");
-    eventPreview.textContent = ""; // Will be updated later if needed
+    const preview = document.createElement("div");
+    preview.classList.add("event-title-preview");
+    preview.textContent = "";
 
-    day.appendChild(dayNum);
-    day.appendChild(eventPreview);
-
-    calendarGrid.appendChild(day);
+    cell.appendChild(dayNumber);
+    cell.appendChild(preview);
+    calendarGrid.appendChild(cell);
   }
 }
 
 /**
- * Highlight event and holiday days on the calendar
- * @param {Array} events - Parsed event objects
+ * Highlight calendar cells based on events array.
+ * @param {Array<Object>} events - each with { Day, Title, Type }
  */
 function highlightCalendarDays(events) {
-  const grouped = {};
-
   // Group events by day
-  events.forEach(evt => {
-    const day = parseInt(evt.Day);
-    if (!grouped[day]) grouped[day] = [];
-    grouped[day].push(evt);
-  });
+  const byDay = events.reduce((acc, evt) => {
+    const day = parseInt(evt.Day, 10);
+    if (!acc[day]) acc[day] = [];
+    acc[day].push(evt);
+    return acc;
+  }, {});
 
-  // Loop through each day and update DOM
-  Object.keys(grouped).forEach(dayKey => {
-    const dayNum = parseInt(dayKey);
-    const eventsForDay = grouped[dayNum];
-    const cell = document.querySelector(`.calendar-day[data-day='${dayNum}']`);
-    const preview = cell.querySelector(".event-title-preview");
+  // Iterate each day group
+  Object.keys(byDay).forEach(dayKey => {
+    const dayNum = Number(dayKey);
+    const cell = calendarGrid.querySelector(`.calendar-day[data-day='${dayNum}']`);
+    if (!cell) return;
 
-    const hasEvents = eventsForDay.some(e => e.Type === "event");
+    const eventsForDay = byDay[dayNum];
+    const hasEvent = eventsForDay.some(e => e.Type === "event");
     const hasHoliday = eventsForDay.some(e => e.Type === "holiday");
 
-    if (hasEvents) {
+    if (hasEvent) {
+      // Mark as event and show first title
       cell.classList.add("event");
-      preview.textContent = eventsForDay[0].Title || "Event";
+      const preview = cell.querySelector(".event-title-preview");
+      preview.textContent = eventsForDay.find(e => e.Type === "event").Title || "Event";
     } else if (hasHoliday) {
+      // Mark as holiday and append a marker
+      cell.classList.add("holiday");
       const marker = document.createElement("div");
       marker.classList.add("holiday-marker");
-      marker.textContent = eventsForDay[0].Title;
+      marker.textContent = eventsForDay.find(e => e.Type === "holiday").Title || "Holiday";
       cell.appendChild(marker);
     }
-  });
 }
 
 /**
- * Add animation for flipping open a calendar tile
+ * Animate a calendar tile opening (flip effect).
  * @param {HTMLElement} tile
  */
 function animateDayOpen(tile) {
@@ -78,7 +94,7 @@ function animateDayOpen(tile) {
 }
 
 /**
- * Reset animation after viewing event
+ * Animate a calendar tile closing (flip back).
  * @param {HTMLElement} tile
  */
 function animateDayClose(tile) {
@@ -86,3 +102,6 @@ function animateDayClose(tile) {
   tile.style.transition = "transform 0.6s ease";
   tile.style.transform = "rotateY(0deg)";
 }
+
+// Export functions if using modules (optional)
+// export { setMonthTitle, drawCalendarGrid, highlightCalendarDays, animateDayOpen, animateDayClose };
