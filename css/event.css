@@ -1,12 +1,11 @@
-/* css/event.css
-   ============================
-   Event Card & Flip Animations
-   ============================ */
+/* ==================================
+   event.css — Event Card & Flip Anim
+   ================================== */
 
 #event-overlay {
   position: fixed;
   inset: 0;
-  background: #ffffff;
+  background: white;
   z-index: 999;
   display: flex;
   justify-content: center;
@@ -14,17 +13,15 @@
   perspective: 800px;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  /* Start rotated away and invisible */
+  /* start rotated away */
   transform: rotateY(90deg);
-  opacity: 0;
-  pointer-events: none;
-  /* The animation will now be triggered by eventCard.js instead of automatically */
+  animation: flipIn 0.6s ease-out forwards;
 }
 
 .event-card {
   width: 90%;
   max-width: 1400px;
-  min-height: 80vh; /* taller for readability */
+  min-height: 80vh;
   background: #fff;
   border-radius: 20px;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
@@ -84,7 +81,7 @@
 
 #event-logo {
   position: absolute;
-  top: 3rem;   /* more space above */
+  top: 3rem;
   right: 2rem;
   height: 50px;
 }
@@ -102,7 +99,7 @@
   border-bottom-right-radius: 20px;
 }
 
-/* Entry animation */
+/* Flip-in */
 @keyframes flipIn {
   0% {
     transform: perspective(800px) rotateY(90deg);
@@ -114,7 +111,7 @@
   }
 }
 
-/* Exit animation */
+/* Flip-out */
 @keyframes flipOut {
   0% {
     transform: perspective(800px) rotateY(0deg);
@@ -126,7 +123,7 @@
   }
 }
 
-/* Fade/slide animations for content */
+/* Slide up content */
 @keyframes slideUp {
   0% {
     transform: translateY(50px);
@@ -138,7 +135,7 @@
   }
 }
 
-/* Animated bottom accent bar */
+/* Accent bar slide */
 @keyframes barSlide {
   0% {
     background-position: 0% 50%;
