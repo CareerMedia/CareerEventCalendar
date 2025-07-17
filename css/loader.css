@@ -5,6 +5,7 @@
 #loader {
   position: fixed;
   inset: 0;
+  /* smooth left-to-right gradient */
   background: linear-gradient(270deg, #d22030, #e64b36);
   background-size: 400% 400%;
   animation: gradientBG 8s ease infinite;
@@ -14,17 +15,17 @@
   z-index: 10000;
 }
 
-/* Pure-CSS spinner */
+/* Pure CSS spinner */
 .spinner {
   width: 80px;
   height: 80px;
   border: 8px solid rgba(255, 255, 255, 0.3);
-  border-top: 8px solid #ffffff;
+  border-top: 8px solid white;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
-/* Animate the background gradient */
+/* Animate gradient */
 @keyframes gradientBG {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
