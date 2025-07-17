@@ -1,6 +1,6 @@
-/* ===========================
-   calendar.css - Month View Styles
-   =========================== */
+/* ===================================
+   calendar.css — Month View Styles
+   =================================== */
 
 body {
   margin: 0;
@@ -8,64 +8,64 @@ body {
   font-family: 'Inter', sans-serif;
   background-color: #ffffff;
   color: #222;
+  overflow: hidden;
 }
 
+/* Hide utility */
+.hidden {
+  display: none;
+}
+
+/* Header styling */
 #calendar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 3rem;
+  padding: 1.5rem 2rem;
   background-color: #d22030;
   color: white;
-  height: 120px;
+  height: 100px;
 }
 
-#calendar-header #logo {
-  height: 70px;
+#main-logo {
+  height: 60px;
+  width: auto;
 }
 
-#calendar-header h1#month-title {
+#month-title {
   font-size: 2.5rem;
   font-weight: 800;
+  margin: 0;
   text-transform: uppercase;
-  margin: 0 auto;
 }
 
-main {
-  padding: 2rem 3rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 120px);
-}
-
+/* Calendar grid container */
 #calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: repeat(5, 1fr);
-  gap: 1.2rem;
-  width: 100%;
-  max-width: 1600px;
-  height: 100%;
-  perspective: 1000px;             /* Enable 3D flip perspective */
+  gap: 1rem;
+  padding: 2rem;
+  height: calc(100vh - 100px); /* full viewport minus header */
+  box-sizing: border-box;
+  perspective: 1000px; /* for flips */
+  background-color: #fafafa;
 }
 
+/* Individual day cells */
 .calendar-day {
+  background: #f9f9f9;
   border: 2px solid #ddd;
   border-radius: 12px;
   padding: 1rem;
-  position: relative;
-  transition: transform 0.6s ease, background 0.3s ease;
+  box-sizing: border-box;
   cursor: default;
-  background-color: #f9f9f9;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow: hidden;
-
-  /* 3D flip support */
   transform-style: preserve-3d;
   backface-visibility: hidden;
+  transition: transform 0.6s ease, background 0.3s ease;
 }
 
 .calendar-day:hover {
@@ -73,35 +73,40 @@ main {
   background-color: #fff6f6;
 }
 
+/* Mark days with events */
 .calendar-day.event {
   border-color: #d22030;
   box-shadow: 0 0 8px rgba(210, 32, 48, 0.5);
 }
 
+/* Mark holidays */
+.calendar-day.holiday {
+  border-color: #888;
+}
+
+/* Day number label */
 .day-number {
   font-size: 1.5rem;
   font-weight: bold;
   color: #333;
 }
 
+/* Title preview for first event */
 .event-title-preview {
-  margin-top: auto;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #d22030;
-  white-space: nowrap;
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 0.5rem;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
 }
 
+/* Holiday marker styling */
 .holiday-marker {
   font-size: 0.85rem;
   color: #888;
   margin-top: 0.5rem;
-  text-align: center;
   font-style: italic;
-}
-
-.hidden {
-  display: none;
+  text-align: center;
 }
