@@ -1,30 +1,40 @@
 /* ==================================
-   event.css — Event Card & Flip Anim
+   css/event.css — Event Card Styles
    ================================== */
 
+/* Hidden until we add .flip-in */
 #event-overlay {
+  display: none;
   position: fixed;
   inset: 0;
   background: white;
   z-index: 999;
-  display: flex;
   justify-content: center;
   align-items: center;
   perspective: 800px;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  /* start rotated away */
-  transform: rotateY(90deg);
+}
+
+/* Show & flip in */
+#event-overlay.flip-in {
+  display: flex;
   animation: flipIn 0.6s ease-out forwards;
 }
 
+/* Flip out */
+#event-overlay.flip-out {
+  animation: flipOut 0.6s ease-in forwards;
+}
+
+/* Card container */
 .event-card {
   width: 90%;
   max-width: 1400px;
   min-height: 80vh;
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.15);
   padding: 4rem;
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -33,6 +43,7 @@
   overflow: hidden;
 }
 
+/* Left side content */
 .event-content {
   display: flex;
   flex-direction: column;
@@ -61,6 +72,7 @@
   margin-top: 1.5rem;
 }
 
+/* Right side QR */
 .qr-section {
   display: flex;
   flex-direction: column;
@@ -79,6 +91,7 @@
   color: #666;
 }
 
+/* Logo in corner */
 #event-logo {
   position: absolute;
   top: 3rem;
@@ -86,6 +99,7 @@
   height: 50px;
 }
 
+/* Accent bar */
 .accent-bar {
   position: absolute;
   bottom: 0;
@@ -99,7 +113,7 @@
   border-bottom-right-radius: 20px;
 }
 
-/* Flip-in */
+/* Animations */
 @keyframes flipIn {
   0% {
     transform: perspective(800px) rotateY(90deg);
@@ -111,7 +125,6 @@
   }
 }
 
-/* Flip-out */
 @keyframes flipOut {
   0% {
     transform: perspective(800px) rotateY(0deg);
@@ -123,7 +136,6 @@
   }
 }
 
-/* Slide up content */
 @keyframes slideUp {
   0% {
     transform: translateY(50px);
@@ -135,12 +147,7 @@
   }
 }
 
-/* Accent bar slide */
 @keyframes barSlide {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
 }
