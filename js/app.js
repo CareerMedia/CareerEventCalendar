@@ -24,11 +24,11 @@ function showApp() {
 
 /** Prepare calendar grid & load data */
 async function initializeData() {
-  setMonthTitle();           // from calendar.js
-  drawCalendarGrid();        // from calendar.js
+  setMonthTitle();           // calendar.js
+  drawCalendarGrid();        // calendar.js
 
-  const all = await loadEventsFromCSV();  // from events.js
-  highlightCalendarDays(all);             // from calendar.js
+  const all = await loadEventsFromCSV();  // events.js
+  highlightCalendarDays(all);             // calendar.js
 
   // Only “event” items go into the loop
   eventList = all.filter(item => item.Type === "event");
@@ -42,7 +42,7 @@ async function runLoop() {
     return;
   }
 
-  // Initial 20 s pause on the calendar before first event
+  // Initial pause before first event
   await sleep(CALENDAR_PAUSE_DURATION);
 
   while (true) {
@@ -59,18 +59,18 @@ async function runLoop() {
       showEventCard(evt);    // eventCard.js
       await sleep(EVENT_CARD_DURATION);
 
-      // 3) Animate tile back and remove the card, awaiting complete hide
-      animateDayClose(tile);         // calendar.js
-      await removeEventCardAsync();  // eventCard.js (async teardown)
+      // 3) Flip tile back and remove the overlay, awaiting complete hide
+      animateDayClose(tile);                 // calendar.js
+      await removeEventCardAsync();          // eventCard.js (async teardown)
     }
 
-    // 4) 20 s pause on calendar before next event
+    // 4) Pause on calendar before next event
     await sleep(CALENDAR_PAUSE_DURATION);
 
     // 5) Advance & wrap
     currentIndex = (currentIndex + 1) % eventList.length;
 
-    // 6) Small gap before pulsing next tile
+    // 6) Short gap before pulsing next tile
     await sleep(BETWEEN_EVENTS_DELAY);
   }
 }
