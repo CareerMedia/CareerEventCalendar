@@ -111,5 +111,5 @@ async function runEventLoop() {
   }
 }
 
-// Kick off when DOM is ready
+// Kick off when DOM is ready ok
 window.addEventListener("DOMContentLoaded", initApp);
