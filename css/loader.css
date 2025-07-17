@@ -14,18 +14,29 @@
   overflow: hidden;
 }
 
-/* Spinner PNG centered */
+/* If you have spinner.png in /assets, it will show here.
+   Otherwise this pure CSS spinner will display. */
 .spinner {
   width: 80px;
   height: 80px;
-  z-index: 10;
-  animation: spinnerFade 1.5s ease-in-out infinite alternate;
+  margin-bottom: 2rem;
+  background: url('../assets/spinner.png') center center no-repeat;
+  background-size: contain;
+}
+.spinner:empty {
+  /* fallback CSS spinner */
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #d22030;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  background: none;
 }
 
-/* Waves at bottom of screen */
+/* Waves at bottom */
 .wave {
   position: absolute;
   bottom: 0;
+  left: -50%;             /* ensure full coverage */
   width: 200%;
   height: 120px;
   background: #d22030;
@@ -34,46 +45,17 @@
   opacity: 0.6;
 }
 
-.wave:nth-child(1) {
-  background: #d22030;
-  z-index: 1;
-  animation-delay: 0s;
-}
+.wave:nth-child(1) { animation-delay: 0s; }
+.wave:nth-child(2) { background: #a41520; opacity: 0.5; animation-delay: 2s; }
+.wave:nth-child(3) { background: #d22030; opacity: 0.4; animation-delay: 4s; }
 
-.wave:nth-child(2) {
-  background: #a41520;
-  z-index: 0;
-  animation-delay: 2s;
-  opacity: 0.5;
-}
-
-.wave:nth-child(3) {
-  background: #d22030;
-  z-index: -1;
-  animation-delay: 4s;
-  opacity: 0.4;
-}
-
-/* Animations */
 @keyframes waveSlide {
-  0% {
-    transform: translateX(0) scaleX(1);
-  }
-  50% {
-    transform: translateX(-25%) scaleX(1.1);
-  }
-  100% {
-    transform: translateX(0) scaleX(1);
-  }
+  0%   { transform: translateX(0)   scaleX(1); }
+  50%  { transform: translateX(-25%) scaleX(1.1); }
+  100% { transform: translateX(0)   scaleX(1); }
 }
 
-@keyframes spinnerFade {
-  0% {
-    opacity: 0.3;
-    transform: scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
