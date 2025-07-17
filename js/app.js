@@ -40,28 +40,40 @@ function showApp() {
  * 5. Pause on calendar view, then start the loop
  */
 async function initApp() {
-  // 1. Header
-  setMonthTitle();                   // calendar.js
+    try {
+        // 1. Header
+        setMonthTitle();                   // calendar.js
 
-  // 2. Calendar grid
-  drawCalendarGrid();                // calendar.js
+        // 2. Calendar grid
+        drawCalendarGrid();                // calendar.js
 
-  // 3. Load CSV data
-  allRawEvents = await loadEventsFromCSV();  // events.js
+        // 3. Load CSV data
+        allRawEvents = await loadEventsFromCSV();  // events.js
 
-  // 4. Highlight days
-  highlightCalendarDays(allRawEvents);       // calendar.js
+        // 4. Highlight days
+        highlightCalendarDays(allRawEvents);       // calendar.js
 
-  // 5. Prepare loop list & elements
-  eventLoopList = allRawEvents.filter(e => e.Type === "event");
-  calendarDays   = document.querySelectorAll(".calendar-day");
+        // 5. Prepare loop list & elements
+        eventLoopList = allRawEvents.filter(e => e.Type === "event");
+        calendarDays   = document.querySelectorAll(".calendar-day");
 
-  // 6. Show calendar for initial delay
-  await sleep(INITIAL_CALENDAR_DELAY);
-  showApp();
+        // 6. Show the main application regardless of what happens
+        showApp();
+        await sleep(INITIAL_CALENDAR_DELAY);
 
-  // 7. Start perpetual event cycle
-  runEventLoop();
+        // 7. Start perpetual event cycle ONLY if there are events
+        if (eventLoopList.length > 0) {
+            runEventLoop();
+        } else {
+            console.warn("No events to display in the loop. The calendar will remain static.");
+        }
+    } catch (error) {
+        console.error("A critical error occurred during app initialization:", error);
+        // You might want to show an error message to the user here instead of just the loader
+        // For now, we'll still hide the loader to not get stuck.
+        showApp();
+        document.getElementById('calendar-grid').innerHTML = `<p style="color: red; text-align: center; font-size: 1.5rem;">Error loading application. Please check the console.</p>`;
+    }
 }
 
 /**
@@ -72,6 +84,7 @@ async function initApp() {
  * - Pauses appropriately at end of cycle or between events
  */
 async function runEventLoop() {
+  // This check is now done in initApp, but we'll keep it as a safeguard.
   if (!eventLoopList.length) {
     console.warn("No events to display.");
     return;
@@ -93,6 +106,7 @@ async function runEventLoop() {
 
       // 3. Remove card & flip back
       removeEventCard();           // eventCard.js
+      await sleep(600); // Wait for flip-out animation
       animateDayClose(tile);       // calendar.js
     }
 
