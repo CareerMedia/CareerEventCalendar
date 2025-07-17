@@ -1,62 +1,38 @@
-/* ===============================
-   events.js - Event CSV Loader
-   =============================== */
+/* ==============================================
+   js/events.js — Load & Parse events.csv data
+   ============================================== */
 
 const CSV_PATH = "data/events.csv";
 
-/**
- * Load and parse the events CSV into JS objects
- * @returns {Promise<Array<Object>>}
- */
+/** Fetch & parse */
 async function loadEventsFromCSV() {
   try {
-    const response = await fetch(CSV_PATH);
-    const csvText = await response.text();
-    const parsedEvents = parseCSV(csvText);
-    const cleanedEvents = cleanAndSortEvents(parsedEvents);
-    return cleanedEvents;
-  } catch (error) {
-    console.error("Failed to load events.csv:", error);
+    const res = await fetch(CSV_PATH);
+    const text = await res.text();
+    return cleanAndSortEvents(parseCSV(text));
+  } catch {
+    console.error("Could not load events.csv");
     return [];
   }
 }
 
-/**
- * Parse raw CSV text into object array
- * @param {string} csv
- * @returns {Array<Object>}
- */
-function parseCSV(csv) {
-  const lines = csv.trim().split("\n");
-  const headers = lines[0].split(",").map(h => h.trim());
-
-  const entries = lines.slice(1).map(line => {
-    const values = line.split(",").map(v => v.trim());
-    const obj = {};
-    headers.forEach((header, idx) => {
-      obj[header] = values[idx] || "";
-    });
-    return obj;
+/** Basic CSV → objects */
+function parseCSV(raw) {
+  const [head, ...rows] = raw.trim().split("\n");
+  const keys = head.split(",").map(h => h.trim());
+  return rows.map(r => {
+    const vals = r.split(",").map(c => c.trim());
+    return keys.reduce((o, k, i) => (o[k] = vals[i] || "", o), {});
   });
-
-  return entries;
 }
 
-/**
- * Filter and sort event objects by day (1–31)
- * @param {Array<Object>} events
- * @returns {Array<Object>}
- */
-function cleanAndSortEvents(events) {
-  return events
-    .filter(event => {
-      const day = parseInt(event.Day);
-      const validType = event.Type === "event" || event.Type === "holiday";
-      return !isNaN(day) && day >= 1 && day <= 31 && validType;
+/** Filter 1–31 and valid Types, then sort by day */
+function cleanAndSortEvents(arr) {
+  return arr
+    .filter(e => {
+      const d = parseInt(e.Day, 10);
+      return !isNaN(d) && d >= 1 && d <= 31 &&
+             (e.Type === "event" || e.Type === "holiday");
     })
-    .sort((a, b) => {
-      const dayA = parseInt(a.Day);
-      const dayB = parseInt(b.Day);
-      return dayA - dayB;
-    });
+    .sort((a,b) => parseInt(a.Day,10) - parseInt(b.Day,10));
 }
