@@ -1,22 +1,26 @@
+// js/eventCard.js
 /* ==================================
-   eventCard.js - Event Card Builder
+   Event Card Builder & Teardown
    ================================== */
 
 const overlayContainer = document.getElementById("event-overlay");
 
 /**
- * Renders a full event card overlay based on event object
- * @param {Object} eventData
+ * Render and animate in a full-screen event card.
+ * @param {Object} eventData - { Title, Date, Time, Location, Blurb, QR_Link }
  */
 function showEventCard(eventData) {
-  // Clear previous
+  // Clear previous content
   overlayContainer.innerHTML = "";
+
+  // Ensure flipIn animation
+  overlayContainer.style.animation = "flipIn 0.6s ease-out forwards";
 
   // Create card wrapper
   const card = document.createElement("div");
   card.classList.add("event-card");
 
-  // === Left Content ===
+  // === Left: Event Details ===
   const content = document.createElement("div");
   content.classList.add("event-content");
 
@@ -35,50 +39,47 @@ function showEventCard(eventData) {
   blurb.classList.add("blurb");
   blurb.textContent = eventData.Blurb;
 
-  content.appendChild(title);
-  content.appendChild(dateTime);
-  content.appendChild(location);
-  content.appendChild(blurb);
+  content.append(title, dateTime, location, blurb);
 
-  // === Right Side: QR Code ===
-  const qr = document.createElement("div");
-  qr.classList.add("qr-section");
+  // === Right: QR Code ===
+  const qrSection = document.createElement("div");
+  qrSection.classList.add("qr-section");
 
-  const qrCanvas = document.createElement("div");
-  qrCanvas.id = "qr-code";
+  const qrContainer = document.createElement("div");
+  qrContainer.id = "qr-code";
 
   const qrLabel = document.createElement("span");
   qrLabel.textContent = "Scan to RSVP";
 
-  qr.appendChild(qrCanvas);
-  qr.appendChild(qrLabel);
+  qrSection.append(qrContainer, qrLabel);
 
-  // Generate QR Code (from qr.js)
-  generateQRCode(qrCanvas, eventData.QR_Link);
+  // Generate QR code (qr.js)
+  generateQRCode(qrContainer, eventData.QR_Link);
 
   // === Logo ===
   const logo = document.createElement("img");
-  logo.src = "assets/logo.png";
   logo.id = "event-logo";
+  logo.src = "assets/logo.png";
   logo.alt = "Career Center Logo";
 
-  // === Bottom Accent Bar ===
+  // === Accent Bar ===
   const accent = document.createElement("div");
   accent.classList.add("accent-bar");
 
-  // Append to card
-  card.appendChild(content);
-  card.appendChild(qr);
-  card.appendChild(logo);
-  card.appendChild(accent);
-
-  // Add to overlay
+  // Assemble card
+  card.append(content, qrSection, logo, accent);
   overlayContainer.appendChild(card);
 }
 
 /**
- * Removes event overlay from view
+ * Animate out and remove the event card.
  */
 function removeEventCard() {
-  overlayContainer.innerHTML = "";
+  // Trigger flipOut animation
+  overlayContainer.style.animation = "flipOut 0.6s ease-in forwards";
+
+  // Once complete, clear content
+  overlayContainer.addEventListener("animationend", () => {
+    overlayContainer.innerHTML = "";
+  }, { once: true });
 }
