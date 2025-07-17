@@ -1,116 +1,126 @@
 /* ============================
-   app.js - Main Animation Engine
+   js/app.js - Main Animation Engine
    ============================ */
 
-// Global Variables
-let allEvents = [];            // Stores parsed event objects
-let eventIndex = 0;            // Keeps track of which event is currently showing
-let calendarDays = [];         // DOM references to calendar day elements
-const animationDelay = 6000;   // Time in ms to show each event card before next
+// Configuration
+const INITIAL_CALENDAR_DELAY = 20000;  // 20s pause before first event
+const CYCLE_CALENDAR_DELAY   = 20000;  // 20s pause at end of full cycle
+const EVENT_DISPLAY_DELAY    = 15000;  // 15s per event card
+const BETWEEN_EVENTS_DELAY   = 1200;   // 1.2s between events
+
+// State
+let allEvents     = [];   // Array of event objects loaded from CSV
+let eventIndex    = 0;    // Index of the current event in the loop
+let calendarDays  = [];   // NodeList of .calendar-day elements
 
 /**
- * Utility: Wait for X milliseconds
+ * Sleep for a given number of milliseconds.
+ * @param {number} ms
+ * @returns {Promise<void>}
  */
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 /**
- * Set the current month name based on real date
+ * Set the calendar header to the current month name.
  */
 function setMonthTitle() {
   const now = new Date();
   const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "January", "February", "March",     "April",
+    "May",     "June",     "July",      "August",
+    "September","October",  "November", "December"
   ];
-  document.getElementById("month-title").textContent = monthNames[now.getMonth()];
+  const titleEl = document.getElementById("month-title");
+  titleEl.textContent = monthNames[now.getMonth()];
 }
 
 /**
- * Hide loader and reveal app once everything is ready
+ * Hide the loader screen and reveal the main app UI.
  */
 function showApp() {
-  const loader = document.getElementById("loader");
-  const app = document.getElementById("app");
-
-  loader.style.display = "none";
-  app.classList.remove("hidden");
+  document.getElementById("loader").style.display = "none";
+  document.getElementById("app").classList.remove("hidden");
 }
 
 /**
- * Prepare the calendar and load event data
+ * Initialize the app:
+ * 1. Set month title
+ * 2. Draw calendar grid
+ * 3. Load and highlight events
+ * 4. Pause on calendar
+ * 5. Start the event loop
  */
 async function initApp() {
-  try {
-    // Set month label
-    setMonthTitle();
+  // 1. Month title
+  setMonthTitle();
 
-    // Step 1: Draw the base calendar grid
-    drawCalendarGrid(); // <- calendar.js
+  // 2. Draw calendar grid
+  drawCalendarGrid();               // from calendar.js
 
-    // Step 2: Load events from CSV
-    allEvents = await loadEventsFromCSV(); // <- events.js
+  // 3. Load events from CSV
+  allEvents = await loadEventsFromCSV();  // from events.js
 
-    // Step 3: Mark event days in the calendar
-    highlightCalendarDays(allEvents); // <- calendar.js
+  // 4. Highlight days that have events/holidays
+  highlightCalendarDays(allEvents); // from calendar.js
 
-    // Step 4: Reference all calendar day elements
-    calendarDays = document.querySelectorAll(".calendar-day");
+  // 5. Get references to all day tiles
+  calendarDays = document.querySelectorAll(".calendar-day");
 
-    // Step 5: Show the app
-    await sleep(1500); // Let loader breathe for a sec
-    showApp();
+  // 6. Pause on month-view calendar
+  await sleep(INITIAL_CALENDAR_DELAY);
+  showApp();
 
-    // Step 6: Begin cycling through events
-    runEventLoop();
-
-  } catch (err) {
-    console.error("App failed to initialize:", err);
-  }
+  // 7. Start cycling through events
+  runEventLoop();
 }
 
 /**
- * Main animation loop: shows one event at a time
+ * Main loop: cycles through allEvents indefinitely.
+ * Applies flips, shows event cards, and pauses appropriately.
  */
 async function runEventLoop() {
+  if (!allEvents.length) {
+    console.warn("No events to display.");
+    return;
+  }
+
   while (true) {
-    // Safety check
-    if (!allEvents.length) {
-      console.warn("No events loaded to cycle.");
-      return;
+    // Get the next event
+    const evt = allEvents[eventIndex];
+    const dayNum = parseInt(evt.Day, 10);
+
+    // Find the calendar tile for this event
+    const tile = calendarDays[dayNum - 1];
+    if (tile) {
+      // Flip open animation
+      animateDayOpen(tile);          // from calendar.js
+      await sleep(1500);             // allow flip to complete
+
+      // Show full-screen event card
+      showEventCard(evt);            // from eventCard.js
+      await sleep(EVENT_DISPLAY_DELAY);
+
+      // Remove event overlay and flip back
+      removeEventCard();             // from eventCard.js
+      animateDayClose(tile);         // from calendar.js
     }
 
-    // Get current event
-    const currentEvent = allEvents[eventIndex];
+    // Advance index
+    eventIndex++;
+    const endOfCycle = eventIndex >= allEvents.length;
 
-    // Reference day block on calendar and animate it
-    const dayNum = parseInt(currentEvent.Day);
-    const dayElement = calendarDays[dayNum - 1]; // 0-indexed
-    animateDayOpen(dayElement); // <- calendar.js
-
-    // Wait a moment to allow tile animation
-    await sleep(1000);
-
-    // Render full-screen event card
-    showEventCard(currentEvent); // <- eventCard.js
-
-    // Show for duration
-    await sleep(animationDelay);
-
-    // Remove event overlay
-    removeEventCard(); // <- eventCard.js
-
-    // Reset tile (optional)
-    animateDayClose(dayElement); // <- calendar.js
-
-    // Step to next event, wrap around if needed
-    eventIndex = (eventIndex + 1) % allEvents.length;
-
-    // Short delay before next flip
-    await sleep(1200);
+    if (endOfCycle) {
+      // Reset and pause at end of full cycle
+      eventIndex = 0;
+      await sleep(CYCLE_CALENDAR_DELAY);
+    } else {
+      // Short pause before next event
+      await sleep(BETWEEN_EVENTS_DELAY);
+    }
   }
 }
 
-// Start the app after page load
+// Kick off initialization once the DOM is fully loaded
 window.addEventListener("DOMContentLoaded", initApp);
