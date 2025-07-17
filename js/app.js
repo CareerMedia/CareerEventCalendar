@@ -2,9 +2,9 @@
    js/app.js — Loader + Main Orchestrator
    =================================== */
 
-const INITIAL_LOADER_DURATION   = 2000;   // 2 s loader
+const INITIAL_LOADER_DURATION   = 3000;   // 2 s loader
 const CALENDAR_PAUSE_DURATION   = 20000;  // 20 s on calendar between events
-const EVENT_CARD_DURATION       = 20000;  // 20 s showing each event
+const EVENT_CARD_DURATION       = 10000;  // 20 s showing each event
 const BETWEEN_EVENTS_DELAY      = 12000;   // 1.2 s between events
 
 let eventList    = [];
