@@ -1,0 +1,104 @@
+/* ===========================
+   calendar.css - Month View Styles
+   =========================== */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #ffffff;
+  color: #222;
+}
+
+#calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 3rem;
+  background-color: #d22030;
+  color: white;
+  height: 120px;
+}
+
+#calendar-header #logo {
+  height: 70px;
+}
+
+#calendar-header h1#month-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin: 0 auto;
+}
+
+main {
+  padding: 2rem 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 120px);
+}
+
+#calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 1.2rem;
+  width: 100%;
+  max-width: 1600px;
+  height: 100%;
+}
+
+.calendar-day {
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem;
+  position: relative;
+  transition: transform 0.3s ease, background 0.3s ease;
+  cursor: default;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.calendar-day:hover {
+  transform: scale(1.02);
+  background-color: #fff6f6;
+}
+
+.calendar-day.event {
+  border-color: #d22030;
+  box-shadow: 0 0 8px rgba(210, 32, 48, 0.5);
+}
+
+.day-number {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.event-title-preview {
+  margin-top: auto;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #d22030;
+  text-align: left;
+  margin-top: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.holiday-marker {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 0.5rem;
+  text-align: center;
+  font-style: italic;
+}
+
+.hidden {
+  display: none;
+}
