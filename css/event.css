@@ -14,9 +14,11 @@
   perspective: 800px;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  /* Start rotated away */
+  /* Start rotated away and invisible */
   transform: rotateY(90deg);
-  animation: flipIn 0.6s ease-out forwards;
+  opacity: 0;
+  pointer-events: none;
+  /* The animation will now be triggered by eventCard.js instead of automatically */
 }
 
 .event-card {
