@@ -11,7 +11,7 @@ let eventList    = [];
 let currentIndex = 0;
 let dayTiles     = [];
 
-/** Simple sleep utility */
+/** Sleep helper */
 function sleep(ms) {
   return new Promise(res => setTimeout(res, ms));
 }
@@ -30,6 +30,7 @@ async function initializeData() {
   const all = await loadEventsFromCSV();  // from events.js
   highlightCalendarDays(all);             // from calendar.js
 
+  // Only real events get cards
   eventList = all.filter(e => e.Type === "event");
   dayTiles  = document.querySelectorAll(".calendar-day");
 }
@@ -47,15 +48,16 @@ async function runLoop() {
       animateDayOpen(tile);  // from calendar.js
       await sleep(500);
 
-      // SHOW the overlay and keep it up for EVENT_DURATION
+      // SHOW overlay for the full EVENT_DURATION
       showEventCard(evt);    // from eventCard.js
       await sleep(EVENT_DURATION);
 
-      // TEAR DOWN the overlay
+      // TEAR DOWN overlay and flip tile back
       removeEventCard();     // from eventCard.js
       animateDayClose(tile); // from calendar.js
     }
 
+    // Advance index
     currentIndex++;
     if (currentIndex >= eventList.length) {
       currentIndex = 0;
