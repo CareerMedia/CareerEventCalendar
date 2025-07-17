@@ -5,7 +5,7 @@
 const INITIAL_LOADER_DURATION = 2000;   // 2 s loader
 const CYCLE_PAUSE             = 20000;  // 20 s pause after a full cycle
 const EVENT_DURATION          = 20000;  // 20 s display per event card
-const BETWEEN_EVENTS          = 1200;   // 1.2 s between events
+const BETWEEN_EVENTS          = 10000;   // 10 s between events
 
 let eventList    = [];
 let currentIndex = 0;
