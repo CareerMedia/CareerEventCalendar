@@ -1,60 +1,37 @@
 /* =====================================
-   loader.css — Full-Screen Animated Loader
+   loader.css — Full-Screen Gradient Loader
    ===================================== */
 
 #loader {
   position: fixed;
   inset: 0;
-  background: #ffffff;
-  z-index: 10000;
+  background: linear-gradient(270deg, #d22030, #e64b36);
+  background-size: 400% 400%;
+  animation: gradientBG 8s ease infinite;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  z-index: 10000;
 }
 
-/* Pure-CSS Spinner */
+/* Pure-CSS spinner */
 .spinner {
   width: 80px;
   height: 80px;
-  border: 8px solid rgba(210, 32, 48, 0.2);
-  border-top: 8px solid #d22030;
+  border: 8px solid rgba(255, 255, 255, 0.3);
+  border-top: 8px solid #ffffff;
   border-radius: 50%;
-  animation: spin 1.2s linear infinite;
-  z-index: 10;
-  margin-bottom: 2rem;
+  animation: spin 1s linear infinite;
 }
 
-/* Full-page blurred wave layers */
-.wave {
-  position: absolute;
-  top: 0;
-  left: -50%;
-  width: 300%;
-  height: 100vh;
-  background: linear-gradient(
-    to right,
-    rgba(210, 32, 48, 0.3),
-    rgba(164, 21, 32, 0.2),
-    rgba(210, 32, 48, 0.3)
-  );
-  filter: blur(80px);
-  animation: waveSlide 8s ease-in-out infinite;
-  opacity: 0.4;
+/* Animate the background gradient */
+@keyframes gradientBG {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-/* Staggered waves */
-.wave:nth-child(1) { animation-delay: 0s; }
-.wave:nth-child(2) { animation-delay: 2s; }
-.wave:nth-child(3) { animation-delay: 4s; }
-
-@keyframes waveSlide {
-  0%   { transform: translateX(0)    scaleX(1); }
-  50%  { transform: translateX(-20%) scaleX(1.1); }
-  100% { transform: translateX(0)    scaleX(1); }
-}
-
+/* Spinner rotation */
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
