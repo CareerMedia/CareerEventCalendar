@@ -1,85 +1,62 @@
-// js/eventCard.js
-/* ==================================
-   Event Card Builder & Teardown
-   ================================== */
+/* ======================================
+   js/eventCard.js — Build & Tear Down
+   ====================================== */
 
-const overlayContainer = document.getElementById("event-overlay");
+const overlay = document.getElementById("event-overlay");
 
 /**
- * Render and animate in a full-screen event card.
- * @param {Object} eventData - { Title, Date, Time, Location, Blurb, QR_Link }
+ * Show full-screen card with flip-in.
+ * @param {Object} e — event data
  */
-function showEventCard(eventData) {
-  // Clear previous content
-  overlayContainer.innerHTML = "";
+function showEventCard(e) {
+  overlay.innerHTML = "";                     // clear old
+  overlay.style.animation = "flipIn 0.6s ease";
 
-  // Ensure flipIn animation
-  overlayContainer.style.animation = "flipIn 0.6s ease-out forwards";
-
-  // Create card wrapper
   const card = document.createElement("div");
-  card.classList.add("event-card");
+  card.className = "event-card";
 
-  // === Left: Event Details ===
+  // Left side (details)
   const content = document.createElement("div");
-  content.classList.add("event-content");
+  content.className = "event-content";
+  content.innerHTML = `
+    <h2>${e.Title}</h2>
+    <div class="datetime">${e.Date} | ${e.Time}</div>
+    <div class="location">${e.Location}</div>
+    <div class="blurb">${e.Blurb}</div>
+  `;
 
-  const title = document.createElement("h2");
-  title.textContent = eventData.Title;
-
-  const dateTime = document.createElement("div");
-  dateTime.classList.add("datetime");
-  dateTime.textContent = `${eventData.Date} | ${eventData.Time}`;
-
-  const location = document.createElement("div");
-  location.classList.add("location");
-  location.textContent = eventData.Location;
-
-  const blurb = document.createElement("div");
-  blurb.classList.add("blurb");
-  blurb.textContent = eventData.Blurb;
-
-  content.append(title, dateTime, location, blurb);
-
-  // === Right: QR Code ===
-  const qrSection = document.createElement("div");
-  qrSection.classList.add("qr-section");
-
-  const qrContainer = document.createElement("div");
-  qrContainer.id = "qr-code";
-
+  // Right side (QR)
+  const qrSec = document.createElement("div");
+  qrSec.className = "qr-section";
+  const qrHolder = document.createElement("div");
+  qrHolder.id = "qr-code";
   const qrLabel = document.createElement("span");
   qrLabel.textContent = "Scan to RSVP";
+  qrSec.append(qrHolder, qrLabel);
 
-  qrSection.append(qrContainer, qrLabel);
+  // Generate the QR
+  generateQRCode(qrHolder, e.QR_Link);
 
-  // Generate QR code (qr.js)
-  generateQRCode(qrContainer, eventData.QR_Link);
-
-  // === Logo ===
+  // Logo & accent bar
   const logo = document.createElement("img");
   logo.id = "event-logo";
   logo.src = "assets/logo.png";
   logo.alt = "Career Center Logo";
 
-  // === Accent Bar ===
-  const accent = document.createElement("div");
-  accent.classList.add("accent-bar");
+  const bar = document.createElement("div");
+  bar.className = "accent-bar";
 
-  // Assemble card
-  card.append(content, qrSection, logo, accent);
-  overlayContainer.appendChild(card);
+  // Assemble
+  card.append(content, qrSec, logo, bar);
+  overlay.append(card);
 }
 
 /**
- * Animate out and remove the event card.
+ * Flip-out animation then remove.
  */
 function removeEventCard() {
-  // Trigger flipOut animation
-  overlayContainer.style.animation = "flipOut 0.6s ease-in forwards";
-
-  // Once complete, clear content
-  overlayContainer.addEventListener("animationend", () => {
-    overlayContainer.innerHTML = "";
+  overlay.style.animation = "flipOut 0.6s ease";
+  overlay.addEventListener("animationend", () => {
+    overlay.innerHTML = "";
   }, { once: true });
 }
