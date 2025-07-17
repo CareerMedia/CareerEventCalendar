@@ -47,6 +47,7 @@ main {
   width: 100%;
   max-width: 1600px;
   height: 100%;
+  perspective: 1000px;             /* Enable 3D flip perspective */
 }
 
 .calendar-day {
@@ -54,13 +55,17 @@ main {
   border-radius: 12px;
   padding: 1rem;
   position: relative;
-  transition: transform 0.3s ease, background 0.3s ease;
+  transition: transform 0.6s ease, background 0.3s ease;
   cursor: default;
   background-color: #f9f9f9;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
+
+  /* 3D flip support */
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
 .calendar-day:hover {
@@ -84,8 +89,6 @@ main {
   font-size: 1rem;
   font-weight: 600;
   color: #d22030;
-  text-align: left;
-  margin-top: 0.5rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
