@@ -2,9 +2,10 @@
    js/app.js — Loader + Main Orchestrator
    =================================== */
 
-const INITIAL_LOADER_DURATION = 2000;    // 2 s loader
-const CALENDAR_DISPLAY_DURATION = 20000; // 20 s display on calendar between events
-const EVENT_DURATION = 20000;            // 20 s display per event card
+const INITIAL_LOADER_DURATION   = 2000;   // 2 s loader
+const CALENDAR_PAUSE_DURATION   = 20000;  // 20 s on calendar between events
+const EVENT_CARD_DURATION       = 20000;  // 20 s showing each event
+const BETWEEN_EVENTS_DELAY      = 12000;   // 1.2 s between events
 
 let eventList    = [];
 let currentIndex = 0;
@@ -12,68 +13,70 @@ let dayTiles     = [];
 
 /** Simple sleep utility */
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(res => setTimeout(res, ms));
 }
 
-/** Hide loader & reveal the main app */
+/** Hide loader & reveal calendar/app */
 function showApp() {
   document.getElementById("loader").style.display = "none";
   document.getElementById("app").classList.remove("hidden");
 }
 
-/** Load and prepare calendar grid + data */
+/** Prepare calendar grid & load data */
 async function initializeData() {
-  setMonthTitle();           // from calendar.js
-  drawCalendarGrid();        // from calendar.js
+  setMonthTitle();           // calendar.js
+  drawCalendarGrid();        // calendar.js
 
-  const allItems = await loadEventsFromCSV();  // from events.js
-  highlightCalendarDays(allItems);             // from calendar.js
+  const all = await loadEventsFromCSV();  // events.js
+  highlightCalendarDays(all);             // calendar.js
 
-  // Only keep real events in the loop
-  eventList = allItems.filter(item => item.Type === "event");
+  // Only “event” items go into the loop
+  eventList = all.filter(item => item.Type === "event");
   dayTiles  = Array.from(document.querySelectorAll(".calendar-day"));
 }
 
-/** Main perpetual loop */
+/** The perpetual loop */
 async function runLoop() {
   if (!eventList.length) {
-    console.warn("No events to display.");
+    console.warn("No events found.");
     return;
   }
 
+  // **Initial 20 s pause on the calendar before first event**
+  await sleep(CALENDAR_PAUSE_DURATION);
+
   while (true) {
     const evt    = eventList[currentIndex];
-    const dayNum = parseInt(evt.Day, 10);
-    const tile   = dayTiles[dayNum - 1];
+    const dayNum = parseInt(evt.Day, 10) - 1;
+    const tile   = dayTiles[dayNum];
 
     if (tile) {
-      // Flip open the calendar tile
-      animateDayOpen(tile);  // from calendar.js
+      // Flip the tile face-up
+      animateDayOpen(tile);              // calendar.js
       await sleep(500);
 
       // Show the full-screen event card
-      showEventCard(evt);    // from eventCard.js
-      await sleep(EVENT_DURATION);
+      showEventCard(evt);                // eventCard.js
+      await sleep(EVENT_CARD_DURATION);
 
-      // Remove the event card and flip the tile back
-      removeEventCard();     // from eventCard.js
-      animateDayClose(tile); // from calendar.js
+      // Remove the card and flip the tile back
+      removeEventCard();                 // eventCard.js
+      animateDayClose(tile);             // calendar.js
     }
 
-    // After closing, display the calendar for 20 s
-    await sleep(CALENDAR_DISPLAY_DURATION);
+    // **20 s pause on the calendar before next event**
+    await sleep(CALENDAR_PAUSE_DURATION);
 
-    // Advance to next event, wrapping around
+    // Advance & wrap
     currentIndex = (currentIndex + 1) % eventList.length;
   }
 }
 
-/** Entry point */
+/** Kick things off on DOM ready */
 document.addEventListener("DOMContentLoaded", async () => {
-  // 1) Prepare everything
   await initializeData();
 
-  // 2) Show loader then app and start loop
+  // Show loader, then reveal and start loop
   setTimeout(() => {
     showApp();
     runLoop();
