@@ -5,66 +5,70 @@
 const overlay = document.getElementById("event-overlay");
 
 /**
- * Display the event card for the full overlay.
- * @param {Object} evt — {Title, Date, Time, Location, Blurb, QR_Link}
+ * Show a full-screen event card and keep it up.
+ * @param {Object} e — {Title, Date, Time, Location, Blurb, QR_Link}
  */
-function showEventCard(evt) {
-  // Ensure previous state cleared
-  overlay.classList.remove("hide");
-  overlay.innerHTML = "";           // clear old
-  overlay.classList.add("show");    // makes display:flex
+function showEventCard(e) {
+  // 1. Make overlay visible
+  overlay.style.display = "flex";
 
-  // Build card
+  // 2. Clear any previous content
+  overlay.innerHTML = "";
+
+  // 3. Build the card container
   const card = document.createElement("div");
-  card.className = "event-card";
+  card.classList.add("event-card");
 
-  // Left (details)
-  const content = document.createElement("div");
-  content.className = "event-content";
-  content.innerHTML = `
-    <h2>${evt.Title}</h2>
-    <div class="datetime">${evt.Date} | ${evt.Time}</div>
-    <div class="location">${evt.Location}</div>
-    <div class="blurb">${evt.Blurb}</div>
+  // 4. Populate left side (details)
+  const details = document.createElement("div");
+  details.classList.add("event-content");
+  details.innerHTML = `
+    <h2>${e.Title}</h2>
+    <div class="datetime">${e.Date} | ${e.Time}</div>
+    <div class="location">${e.Location}</div>
+    <div class="blurb">${e.Blurb}</div>
   `;
 
-  // Right (QR)
+  // 5. Populate right side (QR)
   const qrSection = document.createElement("div");
-  qrSection.className = "qr-section";
-  const qrHolder = document.createElement("div");
-  qrHolder.id = "qr-code";
+  qrSection.classList.add("qr-section");
+  const qrContainer = document.createElement("div");
+  qrContainer.id = "qr-code";
   const qrLabel = document.createElement("span");
   qrLabel.textContent = "Scan to RSVP";
-  qrSection.append(qrHolder, qrLabel);
-  generateQRCode(qrHolder, evt.QR_Link);
+  qrSection.append(qrContainer, qrLabel);
+  generateQRCode(qrContainer, e.QR_Link);  // qr.js
 
-  // Logo & accent bar
+  // 6. Logo & accent bar
   const logo = document.createElement("img");
   logo.id = "event-logo";
   logo.src = "assets/logo.png";
   logo.alt = "Career Center Logo";
 
-  const accentBar = document.createElement("div");
-  accentBar.className = "accent-bar";
+  const accent = document.createElement("div");
+  accent.classList.add("accent-bar");
 
-  // Assemble & append
-  card.append(content, qrSection, logo, accentBar);
+  // 7. Assemble & display
+  card.append(details, qrSection, logo, accent);
   overlay.append(card);
+
+  // 8. Trigger flip-in animation on the card
+  card.style.animation = "flipIn 0.6s ease-out forwards";
 }
 
 /**
- * Animate overlay out and then hide/clear it.
+ * Animate flip-out, then hide the overlay.
  */
 function removeEventCard() {
-  // Start flipOut on card
   const card = overlay.querySelector(".event-card");
-  if (card) {
-    card.style.animation = "flipOut 0.6s ease-in forwards";
-  }
-  // After flipOut duration, hide overlay
+  if (!card) return;
+
+  // 1. Play flip-out
+  card.style.animation = "flipOut 0.6s ease-in forwards";
+
+  // 2. After animation, hide overlay
   setTimeout(() => {
-    overlay.classList.remove("show");
+    overlay.style.display = "none";
     overlay.innerHTML = "";
-    overlay.classList.add("hide");
-  }, 600);
+  }, 600); // must match flipOut duration
 }
