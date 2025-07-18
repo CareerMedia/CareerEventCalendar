@@ -1,11 +1,14 @@
 /* ===================================
    css/calendar.css
    ===================================
-   Updated for smoother tri-color animated background,
-   stronger event/holiday outlines, and drop shadows on event titles.
+   Modern glassmorphic month view
+   - Smooth tri-color animated background
+   - Glass cards for each day
+   - Strong, high-contrast outlines
+   - Drop shadows on text for legibility
 */
 
-/* 1. Full‐screen animated tri‐color gradient background */
+/* 1. Full-screen animated tri-color gradient background */
 body, html {
   margin: 0;
   padding: 0;
@@ -21,7 +24,7 @@ body, html {
     45deg,
     #d22030 0%,
     #e64b36 33%,
-    #000000 66%,
+    #fdbf56 66%,
     #d22030 100%
   );
   background-size: 300% 300%;
@@ -37,7 +40,7 @@ body, html {
   100% { background-position:   0% 50%; }
 }
 
-/* 2. Header (glassmorphic unchanged) */
+/* 2. Header (glassmorphic) */
 #calendar-header {
   display: flex;
   align-items: center;
@@ -49,10 +52,17 @@ body, html {
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 16px rgba(0,0,0,0.1);
 }
-#main-logo { height: 60px; width: auto; }
+#main-logo {
+  height: 60px;
+  width: auto;
+}
 #month-title {
-  font-size: 2.5rem; font-weight: 800;
-  color: #fff; text-transform: uppercase; margin: 0;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.7);
 }
 
 /* 3. Calendar grid */
@@ -98,7 +108,7 @@ body, html {
   font-size: 1.4rem;
   font-weight: 700;
   color: #fff;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
 
 .event-title-preview {
@@ -108,7 +118,7 @@ body, html {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
 
 /* 7. Holiday marker styling */
@@ -118,7 +128,7 @@ body, html {
   font-style: italic;
   text-align: center;
   margin-top: 0.5rem;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
 
 /* 8. Stronger outlines for events & holidays */
@@ -136,7 +146,7 @@ body, html {
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
-/* 9. Pulse animation (unchanged) */
+/* 9. Pulse animation */
 @keyframes pulse {
   0%   { transform: scale(1); }
   50%  { transform: scale(1.05); }
