@@ -1,73 +1,158 @@
 /* ===================================
-   calendar.css — Month View & Pulsing
-   =================================== */
+   css/calendar.css
+   ===================================
+   Modern glassmorphic month view
+   - Animated gradient background
+   - Glass cards for each day
+   - Pulse on events & holidays
+   - Ensures full 5-row grid fits without overflow
+*/
 
-body {
-  margin: 0; padding: 0;
-  font-family: 'Inter', sans-serif;
-  background: #ffffff; color: #222;
+/* 1. Full‐screen animated gradient background */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
   overflow: hidden;
 }
 
-.hidden { display: none; }
+#app {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(
+    45deg,
+    #d22030,
+    #e64b36,
+    #000000,
+    #ffffff
+  );
+  background-size: 400% 400%;
+  animation: bgBreath 20s ease infinite;
+  display: flex;
+  flex-direction: column;
+}
 
+@keyframes bgBreath {
+  0%   { background-position:   0% 50%; }
+  25%  { background-position: 100% 50%; }
+  50%  { background-position: 200% 50%; }
+  75%  { background-position: 100% 50%; }
+  100% { background-position:   0% 50%; }
+}
+
+/* 2. Header */
 #calendar-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1.5rem 2rem; background: #d22030; color: #fff; height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  /* Semi-transparent for glass effect */
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
 }
-#main-logo { height: 60px; width: auto; }
+
+#main-logo {
+  height: 60px;
+  width: auto;
+}
+
 #month-title {
-  font-size: 2.5rem; font-weight: 800; margin: 0; text-transform: uppercase;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0;
 }
 
+/* 3. Calendar grid */
 #calendar-grid {
+  flex: 1;
   display: grid;
-  grid-template-columns: repeat(7,1fr);
-  grid-template-rows: repeat(5,1fr);
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(5, 1fr);
   gap: 1rem;
-  padding: 2rem;
-  height: calc(100vh - 100px);
+  padding: 1rem; /* reduce padding so bottom row shows */
   box-sizing: border-box;
-  background: #fafafa;
 }
 
-/* Day cell */
+/* 4. Glassmorphic day cards */
 .calendar-day {
-  background: #f9f9f9; border: 2px solid #ddd;
-  border-radius: 12px; padding: 1rem;
-  display: flex; flex-direction: column; justify-content: space-between;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
   cursor: default;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Pulse Animation */
-.pulse {
-  animation: pulse 1s ease-in-out;
+/* 5. Hover effect */
+.calendar-day:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
+/* 6. Day number & preview styling */
+.day-number {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.event-title-preview {
+  font-size: 0.85rem;
+  color: #eee;
+  margin-top: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 7. Holiday marker styling */
+.holiday-marker {
+  font-size: 0.8rem;
+  color: #ccc;
+  font-style: italic;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* 8. Event & Holiday highlights */
+.calendar-day.event {
+  border-color: #d22030;
+  box-shadow:
+    0 8px 32px rgba(210, 32, 48, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.calendar-day.holiday {
+  border-color: #000;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* 9. Pulse animation */
 @keyframes pulse {
   0%   { transform: scale(1); }
-  50%  { transform: scale(1.1); }
+  50%  { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
 
-/* Event vs Holiday */
-.calendar-day.event {
-  border-color: #d22030; box-shadow: 0 0 8px rgba(210,32,48,0.5);
-}
-.calendar-day.holiday {
-  border-color: #888;
-}
-
-/* Day number & preview */
-.day-number {
-  font-size: 1.5rem; font-weight: bold; color: #333;
-}
-.event-title-preview {
-  font-size: 0.9rem; color: #555;
-  margin-top: 0.5rem; white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis;
-}
-.holiday-marker {
-  font-size: 0.85rem; color: #888; font-style: italic;
-  text-align: center; margin-top: 0.5rem;
+.pulse {
+  animation: pulse 1s ease-in-out forwards;
 }
