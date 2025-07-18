@@ -9,14 +9,14 @@ async function loadEventsFromCSV() {
   try {
     const res = await fetch(CSV_PATH);
     const text = await res.text();
-    return cleanAndSortEvents(parseCSV(text));
-  } catch {
-    console.error("Could not load events.csv");
+    return cleanAndFilterEvents(parseCSV(text));
+  } catch (err) {
+    console.error("Could not load events.csv", err);
     return [];
   }
 }
 
-/** Basic CSV → objects */
+/** Basic CSV → objects in original row order */
 function parseCSV(raw) {
   const [head, ...rows] = raw.trim().split("\n");
   const keys = head.split(",").map(h => h.trim());
@@ -26,13 +26,15 @@ function parseCSV(raw) {
   });
 }
 
-/** Filter 1–31 and valid Types, then sort by day */
-function cleanAndSortEvents(arr) {
-  return arr
-    .filter(e => {
-      const d = parseInt(e.Day, 10);
-      return !isNaN(d) && d >= 1 && d <= 31 &&
-             (e.Type === "event" || e.Type === "holiday");
-    })
-    .sort((a,b) => parseInt(a.Day,10) - parseInt(b.Day,10));
+/** Keep only days 1–31 and types event/holiday, preserve CSV order */
+function cleanAndFilterEvents(arr) {
+  return arr.filter(e => {
+    const d = parseInt(e.Day, 10);
+    return (
+      !isNaN(d) &&
+      d >= 1 &&
+      d <= 31 &&
+      (e.Type === "event" || e.Type === "holiday")
+    );
+  });
 }
