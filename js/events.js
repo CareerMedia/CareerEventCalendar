@@ -10,8 +10,11 @@ async function loadEventsFromCSV() {
     const res  = await fetch(CSV_PATH);
     const text = await res.text();
     const rows = parseCSV(text);
-    const cleaned = cleanAndFilterEvents(rows);
-    console.log(`📥 Loaded ${rows.length} rows, ${cleaned.length} valid events/holidays`);
+    const cleaned = rows.filter(e => {
+      const d = parseInt(e.Day, 10);
+      return !isNaN(d) && d >= 1 && d <= 31;
+    });
+    console.log(`📥 Loaded ${rows.length} rows, ${cleaned.length} with valid Day`);
     return cleaned;
   } catch (err) {
     console.error("❌ Could not load events.csv:", err);
@@ -19,7 +22,7 @@ async function loadEventsFromCSV() {
   }
 }
 
-/** Convert CSV text to array of objects (no sorting) */
+/** Convert CSV to array of objects in original order */
 function parseCSV(raw) {
   const [header, ...lines] = raw.trim().split("\n");
   const keys = header.split(",").map(h => h.trim());
@@ -28,17 +31,5 @@ function parseCSV(raw) {
     const obj  = {};
     keys.forEach((k, i) => (obj[k] = vals[i] || ""));
     return obj;
-  });
-}
-
-/** Keep only days 1–31, types “event” or “holiday”, case-insensitive */
-function cleanAndFilterEvents(arr) {
-  return arr.filter(e => {
-    const day  = parseInt(e.Day, 10);
-    const type = (e.Type || "").trim().toLowerCase();
-    return !isNaN(day)
-        && day >= 1
-        && day <= 31
-        && (type === "event" || type === "holiday");
   });
 }
