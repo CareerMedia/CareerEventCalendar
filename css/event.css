@@ -17,25 +17,16 @@
   overflow: auto;
 }
 
-/* 2. Card container with white interior and seamless conic-gradient border */
+/* 2. Card container with white interior and large rounding */
 .event-card {
   position: relative;
   width: 90%;
   max-width: 1400px;
   min-height: 80vh;
   background: #ffffff;
-  border: 8px solid transparent;            /* thickness */
-  border-radius: 100px;                     /* large, clear rounding */
-  /* Conic-gradient clipped to border, no gaps */
-  border-image: conic-gradient(
-    from 180deg at 50% 50%,
-    #d22030,
-    #e64b36,
-    #2ca5da,
-    #d22030
-  ) 1;
+  border-radius: 80px;           /* increased radius */
   padding: 4rem;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 4rem;
@@ -44,7 +35,28 @@
   animation: fadeInSlide 0.8s ease-out both;
 }
 
-/* 3. Left column: event details (aligned left, vertically centered) */
+/* 3. Gradient glow behind the card */
+.event-card::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    #d22030,
+    #e64b36,
+    #2ca5da,
+    #d22030
+  );
+  filter: blur(30px);
+  border-radius: 100px;  /* ensure the glow follows the card curves */
+  z-index: -1;
+  opacity: 0.8;
+}
+
+/* 4. Left column: event details (aligned left, vertically centered) */
 .event-content {
   display: flex;
   flex-direction: column;
@@ -75,7 +87,7 @@
   margin-top: 1.5rem;
 }
 
-/* 4. Right column: QR code (centered vertically) */
+/* 5. Right column: QR code (centered vertically) */
 .qr-section {
   display: flex;
   flex-direction: column;
@@ -93,7 +105,7 @@
   color: #666;
 }
 
-/* 5. Logo in top-right corner */
+/* 6. Logo in top-right corner */
 #event-logo {
   position: absolute;
   top: 1.5rem;
@@ -102,12 +114,12 @@
   opacity: 0.85;
 }
 
-/* 6. Remove old accent bar */
+/* 7. Remove old accent bar */
 .accent-bar {
   display: none;
 }
 
-/* 7. Slide & Fade Animations */
+/* 8. Slide & Fade Animations */
 @keyframes fadeInSlide {
   0% {
     opacity: 0;
