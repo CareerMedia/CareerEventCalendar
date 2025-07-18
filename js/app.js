@@ -2,13 +2,13 @@
    js/app.js — Loader + Main Orchestrator
    =================================== */
 
-const INITIAL_LOADER_DURATION  = 2000;  // loader
-const CALENDAR_PAUSE_DURATION  = 20000; // calendar visible
+const INITIAL_LOADER_DURATION  = 2000;  // loader time
+const CALENDAR_PAUSE_DURATION  = 20000; // calendar visible before/after
 const EVENT_CARD_DURATION      = 15000; // per event
-const BETWEEN_EVENTS_DELAY     = 1200;  // gap
+const BETWEEN_EVENTS_DELAY     = 1200;  // small gap
 
-let allItems    = [];
-let eventList   = [];
+let allItems     = [];
+let eventList    = [];
 let currentIndex = 0;
 let dayTiles     = [];
 
@@ -23,28 +23,28 @@ function showApp() {
   document.getElementById("app").classList.remove("hidden");
 }
 
-/** 1) Prepare calendar + data */
+/** 1) Build calendar & load data */
 async function initializeData() {
-  setMonthTitle();                   // calendar.js
-  drawCalendarGrid();                // calendar.js
+  setMonthTitle();                 // calendar.js
+  drawCalendarGrid();              // calendar.js
 
-  allItems  = await loadEventsFromCSV();  // events.js
-  highlightCalendarDays(allItems);        // calendar.js
+  allItems   = await loadEventsFromCSV();        // events.js
+  highlightCalendarDays(allItems);               // calendar.js
 
-  // Build pop-up list of exactly ALL events in CSV order
-  eventList = allItems.filter(e => e.Type.trim().toLowerCase() === "event");
-  console.log(`🔔 Will show ${eventList.length} pop-ups`);
-  dayTiles = Array.from(document.querySelectorAll(".calendar-day"));
+  // Pop-up only for “events” (everything except holidays)
+  eventList  = allItems.filter(e => (e.Type||"").trim().toLowerCase() !== "holiday");
+  console.log(`🔔 Scheduling ${eventList.length} pop-ups from ${allItems.length} rows`);
+  dayTiles   = Array.from(document.querySelectorAll(".calendar-day"));
 }
 
-/** 2) Main loop */
+/** 2) Main perpetual loop */
 async function runEventLoop() {
   if (!eventList.length) {
     console.warn("No events to display.");
     return;
   }
 
-  // initial pause
+  // Initial 20s pause on calendar
   await sleep(CALENDAR_PAUSE_DURATION);
 
   while (true) {
@@ -53,20 +53,17 @@ async function runEventLoop() {
     const tile   = dayTiles[dayNum];
 
     if (tile) {
-      // pulse tile
-      animateDayOpen(tile);   // calendar.js
+      animateDayOpen(tile);          // calendar.js
       await sleep(500);
 
-      // pop-up
-      showEventCard(evt);     // eventCard.js
+      showEventCard(evt);            // eventCard.js
       await sleep(EVENT_CARD_DURATION);
 
-      // teardown
-      animateDayClose(tile);  // calendar.js
-      await removeEventCardAsync(); // eventCard.js
+      animateDayClose(tile);         // calendar.js
+      await removeEventCardAsync();  // eventCard.js
     }
 
-    // calendar pause
+    // 20s on calendar
     await sleep(CALENDAR_PAUSE_DURATION);
 
     currentIndex = (currentIndex + 1) % eventList.length;
