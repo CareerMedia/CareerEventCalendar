@@ -1,11 +1,9 @@
 /* ===================================
    css/calendar.css
    ===================================
-   Modern glassmorphic month view
-   - Smooth tri-color animated background
-   - Glass cards for each day
-   - Strong, high-contrast outlines
-   - Drop shadows on text for legibility
+   Glassmorphic month view with
+   smooth, never-ending 3-color gradient
+   and high-contrast outlines/text shadows
 */
 
 /* 1. Full-screen animated tri-color gradient background */
@@ -20,23 +18,25 @@ body, html {
 #app {
   height: 100vh;
   width: 100vw;
+  /* Smooth 3-color gradient */
   background: linear-gradient(
-    45deg,
-    #d22030 0%,
-    #e64b36 33%,
-    #fdbf56 66%,
-    #d22030 100%
+    115deg,
+    #d22030, /* red */
+    #e64b36, /* orange */
+    #2ca5da  /* blue */
   );
-  background-size: 300% 300%;
-  animation: bgBreath 20s ease infinite;
+  /* Expand to allow movement */
+  background-size: 200% 200%;
+  animation: gradientBG 30s ease infinite;
   display: flex;
   flex-direction: column;
 }
 
-@keyframes bgBreath {
+@keyframes gradientBG {
   0%   { background-position:   0% 50%; }
-  33%  { background-position: 100% 50%; }
-  66%  { background-position: 200% 50%; }
+  25%  { background-position:  50% 25%; }
+  50%  { background-position: 100% 50%; }
+  75%  { background-position:  50% 75%; }
   100% { background-position:   0% 50%; }
 }
 
@@ -103,7 +103,7 @@ body, html {
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-/* 6. Day number & preview styling */
+/* 6. Day number & preview */
 .day-number {
   font-size: 1.4rem;
   font-weight: 700;
@@ -121,7 +121,7 @@ body, html {
   text-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
 
-/* 7. Holiday marker styling */
+/* 7. Holiday marker */
 .holiday-marker {
   font-size: 0.8rem;
   color: #eee;
@@ -131,7 +131,7 @@ body, html {
   text-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
 
-/* 8. Stronger outlines for events & holidays */
+/* 8. Strong outlines */
 .calendar-day.event {
   border-color: #ffffff;
   box-shadow:
@@ -152,6 +152,7 @@ body, html {
   50%  { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
+
 .pulse {
   animation: pulse 1s ease-in-out forwards;
 }
