@@ -17,16 +17,16 @@
   overflow: auto;
 }
 
-/* 2. Card container with white interior and large rounding */
+/* 2. Card container with white interior and big rounding */
 .event-card {
   position: relative;
   width: 90%;
   max-width: 1400px;
   min-height: 80vh;
   background: #ffffff;
-  border-radius: 80px;           /* increased radius */
+  border-radius: 80px;            /* large, clear curves */
   padding: 4rem;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 4rem;
@@ -50,13 +50,13 @@
     #2ca5da,
     #d22030
   );
-  filter: blur(30px);
-  border-radius: 100px;  /* ensure the glow follows the card curves */
+  filter: blur(40px);
+  border-radius: 100px;           /* must exceed card radius to hug corners */
   z-index: -1;
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
-/* 4. Left column: event details (aligned left, vertically centered) */
+/* 4. Left column: event details, left-aligned & vertically centered */
 .event-content {
   display: flex;
   flex-direction: column;
@@ -65,13 +65,11 @@
   text-align: left;
   animation: fadeInSlide 0.8s ease-out both;
 }
-
 .event-content h2 {
   font-size: 3rem;
   color: #d22030;
   margin-bottom: 1rem;
 }
-
 .event-content .datetime,
 .event-content .location {
   font-size: 1.2rem;
@@ -79,7 +77,6 @@
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
-
 .event-content .blurb {
   font-size: 1.1rem;
   color: #444;
@@ -87,7 +84,7 @@
   margin-top: 1.5rem;
 }
 
-/* 5. Right column: QR code (centered vertically) */
+/* 5. Right column: QR code, centered vertically */
 .qr-section {
   display: flex;
   flex-direction: column;
@@ -95,11 +92,9 @@
   justify-content: center;
   animation: fadeInSlide 1s ease-out both;
 }
-
 .qr-section #qr-code {
   margin-bottom: 1rem;
 }
-
 .qr-section span {
   font-size: 0.9rem;
   color: #666;
@@ -130,7 +125,6 @@
     transform: translateY(0);
   }
 }
-
 @keyframes fadeOutSlide {
   0% {
     opacity: 1;
