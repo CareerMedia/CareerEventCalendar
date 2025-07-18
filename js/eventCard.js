@@ -1,21 +1,21 @@
 /* ======================================
-   js/eventCard.js — Slide/Fade Card
+   js/eventCard.js — Show & Teardown Card
    ====================================== */
 
 const overlay = document.getElementById("event-overlay");
 
 /**
- * Show the event card with slide/fade animation.
+ * Show a full-screen event card.
  * @param {Object} e — {Title, Date, Time, Location, Blurb, QR_Link}
  */
 function showEventCard(e) {
   overlay.style.display = "flex";
-  overlay.innerHTML = ""; // clear
+  overlay.innerHTML = ""; 
 
   const card = document.createElement("div");
   card.className = "event-card";
 
-  // Left details
+  // Left: details
   const details = document.createElement("div");
   details.className = "event-content";
   details.innerHTML = `
@@ -25,48 +25,41 @@ function showEventCard(e) {
     <div class="blurb">${e.Blurb}</div>
   `;
 
-  // QR side
+  // Right: QR
   const qrSec = document.createElement("div");
   qrSec.className = "qr-section";
   const qrHolder = document.createElement("div");
   qrHolder.id = "qr-code";
-  const qrLabel = document.createElement("span");
-  qrLabel.textContent = "Scan to RSVP";
-  qrSec.append(qrHolder, qrLabel);
+  qrSec.append(qrHolder, Object.assign(document.createElement("span"), {textContent:"Scan to RSVP"}));
   generateQRCode(qrHolder, e.QR_Link);
 
-  // Logo & bar
+  // Logo
   const logo = document.createElement("img");
   logo.id = "event-logo";
   logo.src = "assets/logo.png";
   logo.alt = "Career Center Logo";
 
-  const bar = document.createElement("div");
-  bar.className = "accent-bar";
-
-  card.append(details, qrSec, logo, bar);
+  card.append(details, qrSec, logo);
   overlay.append(card);
 
-  // Slide/fade in the card
-  card.style.animation = "fadeInSlide 0.8s ease-out forwards";
+  // Animate in
+  card.style.animation = "fadeInSlide 0.6s forwards";
 }
 
 /**
- * Fade-out slide, then hide overlay.
- * @returns {Promise}
+ * Animate out and then hide overlay.
+ * Returns a Promise that resolves once hidden.
  */
 function removeEventCardAsync() {
-  return new Promise(resolve => {
+  return new Promise(res => {
     const card = overlay.querySelector(".event-card");
-    if (!card) {
-      overlay.style.display = "none";
-      return resolve();
-    }
-    card.style.animation = "fadeOutSlide 0.6s ease-in forwards";
+    if (!card) { overlay.style.display="none"; return res(); }
+
+    card.style.animation = "fadeOutSlide 0.6s forwards";
     setTimeout(() => {
       overlay.style.display = "none";
       overlay.innerHTML = "";
-      resolve();
+      res();
     }, 600);
   });
 }
