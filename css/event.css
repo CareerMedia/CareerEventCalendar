@@ -17,16 +17,16 @@
   overflow: auto;
 }
 
-/* 2. Card with smooth conic-gradient border + white interior */
+/* 2. Card container with white interior and seamless conic-gradient border */
 .event-card {
   position: relative;
   width: 90%;
   max-width: 1400px;
   min-height: 80vh;
   background: #ffffff;
-  border: 6px solid transparent;  /* border thickness */
-  border-radius: 40px;            /* big, clear rounding */
-  /* conic-gradient border */
+  border: 8px solid transparent;            /* thickness */
+  border-radius: 100px;                     /* large, clear rounding */
+  /* Conic-gradient clipped to border, no gaps */
   border-image: conic-gradient(
     from 180deg at 50% 50%,
     #d22030,
@@ -107,7 +107,7 @@
   display: none;
 }
 
-/* 7. Animations */
+/* 7. Slide & Fade Animations */
 @keyframes fadeInSlide {
   0% {
     opacity: 0;
