@@ -38,26 +38,29 @@
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 4rem;
-  align-items: start;
+  align-items: center;
+  overflow: hidden;
   animation: fadeInSlide 0.8s ease-out both;
 }
 
-/* 3. Center event details within left column */
+/* 3. Left column: event details (aligned left, vertically centered) */
 .event-content {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
   animation: fadeInSlide 0.8s ease-out both;
 }
 
+/* Headline */
 .event-content h2 {
   font-size: 3rem;
   color: #d22030;
   margin-bottom: 1rem;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
+/* Date/time and location */
 .event-content .datetime,
 .event-content .location {
   font-size: 1.2rem;
@@ -66,6 +69,7 @@
   margin-bottom: 0.5rem;
 }
 
+/* Blurb */
 .event-content .blurb {
   font-size: 1.1rem;
   color: #444;
@@ -73,7 +77,7 @@
   margin-top: 1.5rem;
 }
 
-/* 4. QR code section, centered */
+/* 4. Right column: QR code (centered vertically) */
 .qr-section {
   display: flex;
   flex-direction: column;
@@ -82,20 +86,22 @@
   animation: fadeInSlide 1s ease-out both;
 }
 
+/* QR code canvas margin */
 .qr-section #qr-code {
   margin-bottom: 1rem;
 }
 
+/* QR label */
 .qr-section span {
   font-size: 0.9rem;
   color: #666;
 }
 
-/* 5. Logo in corner, semi-transparent */
+/* 5. Logo in top-right corner */
 #event-logo {
   position: absolute;
-  top: 2rem;
-  right: 2rem;
+  top: 1.5rem;
+  right: 1.5rem;
   height: 50px;
   opacity: 0.85;
 }
@@ -105,7 +111,7 @@
   display: none;
 }
 
-/* 7. Animations */
+/* 7. Slide & Fade Animations */
 @keyframes fadeInSlide {
   0% {
     opacity: 0;
@@ -116,6 +122,7 @@
     transform: translateY(0);
   }
 }
+
 @keyframes fadeOutSlide {
   0% {
     opacity: 1;
