@@ -17,22 +17,23 @@
   overflow: auto;
 }
 
-/* 2. Card container with white interior and gradient border */
+/* 2. Card with smooth conic-gradient border + white interior */
 .event-card {
   position: relative;
   width: 90%;
   max-width: 1400px;
   min-height: 80vh;
   background: #ffffff;
-  border: 4px solid transparent;
-  border-image: linear-gradient(
-    135deg,
+  border: 6px solid transparent;  /* border thickness */
+  border-radius: 40px;            /* big, clear rounding */
+  /* conic-gradient border */
+  border-image: conic-gradient(
+    from 180deg at 50% 50%,
     #d22030,
     #e64b36,
     #2ca5da,
     #d22030
   ) 1;
-  border-radius: 20px;
   padding: 4rem;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
   display: grid;
@@ -53,14 +54,12 @@
   animation: fadeInSlide 0.8s ease-out both;
 }
 
-/* Headline */
 .event-content h2 {
   font-size: 3rem;
   color: #d22030;
   margin-bottom: 1rem;
 }
 
-/* Date/time and location */
 .event-content .datetime,
 .event-content .location {
   font-size: 1.2rem;
@@ -69,7 +68,6 @@
   margin-bottom: 0.5rem;
 }
 
-/* Blurb */
 .event-content .blurb {
   font-size: 1.1rem;
   color: #444;
@@ -86,12 +84,10 @@
   animation: fadeInSlide 1s ease-out both;
 }
 
-/* QR code canvas margin */
 .qr-section #qr-code {
   margin-bottom: 1rem;
 }
 
-/* QR label */
 .qr-section span {
   font-size: 0.9rem;
   color: #666;
@@ -111,7 +107,7 @@
   display: none;
 }
 
-/* 7. Slide & Fade Animations */
+/* 7. Animations */
 @keyframes fadeInSlide {
   0% {
     opacity: 0;
